@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class Portal : MonoBehaviour
 {
+    
+
     [SerializeField] PlayerController.PlayerStype PlayerNextType;
     [SerializeField] Transform nextLocation;
 
