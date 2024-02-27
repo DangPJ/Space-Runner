@@ -15,4 +15,8 @@ public class Vinh2 : MonoBehaviour
     {
         
     }
+    void Test()
+    {
+    
+    }
 }
