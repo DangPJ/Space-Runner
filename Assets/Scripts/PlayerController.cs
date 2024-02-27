@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerController : MonoBehaviour
 {
@@ -164,6 +166,8 @@ public class PlayerController : MonoBehaviour
                 break;
 
             case PlayerStype.SpaceShip:
+                transform.rotation = new Quaternion(0, 0, 0, 0);
+
                 rbCure.velocity = Vector2.zero;
                 rbCure.gravityScale = 1;
 
@@ -187,10 +191,75 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(SpeedBootTimer());
     }
 
+    // Sử dụng Quaternion.Euler để tạo ma trận xoay từ góc
+
+    [SerializeField] float jumpAngle = 45f;
+    [SerializeField] float JumpBoxSpeed = 10f;
+
+    //Cach 1
+    //public void HitJumpBox()
+    //{
+    //    rbCure.gravityScale = 0;
+    //    //Quaternion rotation = Quaternion.Euler(0, 0, jumpAngle);
+
+    //    Vector2 moveDirection = rbCure.velocity;
+
+    //    rbCure.velocity = Vector3.zero;
+
+    //    //Vector2 rotatedDirection = rotation * direction;
+    //    //rbCure.velocity = rotatedDirection;
+
+    //    Vector2 jumpForceVector = Quaternion.Euler(45, 0, jumpAngle)/* * Vector2.up */* moveDirection;
+
+    //    Debug.Log(jumpForceVector);
+    //    rbCure.velocity = jumpForceVector;
+
+    //}
+
+    [SerializeField] GameObject playerBouncedback;
+    [SerializeField] GameObject playerBouncedbackGroundCheck;
+
+
+    //Cach 2
     public void HitJumpBox()
     {
+        playerBouncedback.gameObject.SetActive(true);
+        rbCure.gravityScale = 0;
+        //Quaternion rotation = Quaternion.Euler(0, 0, jumpAngle);
+
+        Vector2 moveDirection = rbCure.velocity;
+
         rbCure.velocity = Vector3.zero;
-        rbCure.velocity = Vector3.up *10;
+
+        Quaternion rotation = Quaternion.AngleAxis(jumpAngle, Vector3.forward);
+        Vector3 test =  rotation * moveDirection;
+
+        rbCure.velocity = new Vector2(test.x,test.y + JumpBoxSpeed) ;
+
+    }
+
+    public void BouncedBack()
+    {
+        rbCure.velocity = new Vector2(rbCure.velocity.x,-rbCure.velocity.y - JumpBoxSpeed) ;
+        playerBouncedback.gameObject.SetActive(false);
+        playerBouncedbackGroundCheck.gameObject.SetActive(true);
+
+    }
+
+    public void BouncedBackGroundCheck()
+    {
+
+        rbCure.velocity = Vector3.zero;
+        rbCure.gravityScale = 2;
+        playerBouncedbackGroundCheck.gameObject.SetActive(false);
+
+    }
+
+    public void ChangeGravity()
+    {
+        Debug.Log("Change");
+        rbCure.gravityScale = -rbCure.gravityScale;
+
     }
 
     IEnumerator SpeedBootTimer()

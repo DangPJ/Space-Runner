@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JumpBox : MonoBehaviour
+public class BouncedBackGroundCheck : MonoBehaviour
 {
+    public PlayerController player;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,14 +17,13 @@ public class JumpBox : MonoBehaviour
         
     }
 
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Player")
+        if (collision.tag == "Ground")
         {
-            Debug.Log("Hit Jump Box");
-
-            collision.gameObject.GetComponentInParent<PlayerController>().HitJumpBox();
-            
+            Debug.Log("BoucedBack");
+            player.BouncedBackGroundCheck();
         }
     }
 }

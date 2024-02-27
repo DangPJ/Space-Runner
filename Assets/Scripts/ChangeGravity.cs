@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JumpBox : MonoBehaviour
+public class ChangeGravity : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
@@ -20,10 +20,8 @@ public class JumpBox : MonoBehaviour
     {
         if (collision.tag == "Player")
         {
-            Debug.Log("Hit Jump Box");
-
-            collision.gameObject.GetComponentInParent<PlayerController>().HitJumpBox();
-            
+            Debug.Log("ChangeGravity");
+            collision.GetComponentInParent<PlayerController>().ChangeGravity();
         }
     }
 }
