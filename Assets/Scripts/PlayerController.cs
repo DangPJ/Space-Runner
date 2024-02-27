@@ -5,11 +5,11 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-
     public enum PlayerStype
     {
         Cube,
         Rocket,
+        SpaceShip,
     }
 
     public PlayerStype playerStype;
@@ -20,6 +20,9 @@ public class PlayerController : MonoBehaviour
 
     //[SerializeField] Rigidbody2D rbRocket;
 
+    [SerializeField] GameObject playerSpaceShipMesh;
+
+
     [SerializeField] GameObject playerRocketMesh;
 
     [SerializeField] bool isGrounded;
@@ -28,8 +31,13 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] Transform startLocation;
 
-    [SerializeField] float moveSpeed = 5f;
+    float moveSpeed = 5f;
+    [SerializeField] float moveSpeedNormal = 5f;
+
+    [SerializeField] float moveSpeedBooted = 10f;
+
     [SerializeField] float turnSpeed = 10f;
+    [SerializeField] float speedBootCount = 1f;
 
     [SerializeField] float thrustForce = 5f;
     [SerializeField] float rotationSpeed = 2f;
@@ -44,6 +52,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        moveSpeed = moveSpeedNormal;
     }
 
     // Update is called once per frame
@@ -72,10 +81,13 @@ public class PlayerController : MonoBehaviour
 
                 break;
             case PlayerStype.Rocket:
+                Movement();
+                break;
+
+            case PlayerStype.SpaceShip:
                 Movement2();
 
                 break;
-
         }
     }
 
@@ -91,7 +103,6 @@ public class PlayerController : MonoBehaviour
     }
 
     //Rocket Move Style 2
-
     void Movement2()
     {
         Vector2 movement = new Vector2(moveSpeed, rbCure.velocity.y);
@@ -126,14 +137,16 @@ public class PlayerController : MonoBehaviour
 
     public void ChangeSpaceShip(PlayerStype newStype)
     {
+        moveSpeed = moveSpeedNormal;
+
         playerCubeMesh.gameObject.SetActive(false);
         playerRocketMesh.gameObject.SetActive(false);
+        playerSpaceShipMesh.gameObject.SetActive(false);
         
         playerStype = newStype;
 
         switch (newStype)
         {
-
             case PlayerStype.Cube:
                 playerStype = newStype;
                 rbCure.gravityScale = 2;
@@ -141,17 +154,24 @@ public class PlayerController : MonoBehaviour
 
                 playerCubeMesh.gameObject.SetActive(true);
                 break;
+
             case PlayerStype.Rocket:
                 rbCure.velocity = Vector2.zero;
-                rbCure.gravityScale = 1;
+                rbCure.gravityScale = 0;
 
                 playerRocketMesh.gameObject.SetActive(true);
 
                 break;
+
+            case PlayerStype.SpaceShip:
+                rbCure.velocity = Vector2.zero;
+                rbCure.gravityScale = 1;
+
+                playerSpaceShipMesh.gameObject.SetActive(true);
+                break;
         }
 
     }
-
 
 
     public void ReStart()
@@ -159,7 +179,25 @@ public class PlayerController : MonoBehaviour
         ChangeSpaceShip(playerStartSpaceShip);
         transform.position = startLocation.position;
 
+    }
 
+    public void BootSpeed()
+    {
+        moveSpeed = moveSpeedBooted;
+        StartCoroutine(SpeedBootTimer());
+    }
+
+    public void HitJumpBox()
+    {
+        rbCure.velocity = Vector3.zero;
+        rbCure.velocity = Vector3.up *10;
+    }
+
+    IEnumerator SpeedBootTimer()
+    {
+        Debug.Log("Boot Speed");
+        yield return new WaitForSeconds(speedBootCount);
+        moveSpeed = moveSpeedNormal;
     }
 
 
